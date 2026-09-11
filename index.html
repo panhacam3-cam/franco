@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>FRANCO ROBUX - Sales Calculator</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: #110e15;
+            color: #fff6ed;
+            margin: 0;
+            padding: 12px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 480px;
+            background: #1c1822;
+            border-radius: 20px;
+            border: 1px solid #322a3d;
+            padding: 18px;
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.6);
+        }
+
+        /* Header & Logo */
+        .header {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid #2d2438;
+            margin-bottom: 16px;
+        }
+
+        .logo-img {
+            width: 58px;
+            height: 58px;
+            border-radius: 14px;
+            object-fit: cover;
+            border: 2px solid #f39c38;
+            box-shadow: 0 0 12px rgba(243, 156, 56, 0.35);
+            background-color: #2b2236;
+            flex-shrink: 0;
+        }
+
+        .header-text h1 {
+            margin: 0;
+            font-size: 20px;
+            font-weight: 900;
+            letter-spacing: 0.5px;
+            background: linear-gradient(135deg, #ffd384 0%, #f39c38 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-transform: uppercase;
+        }
+
+        .header-text p {
+            margin: 3px 0 0 0;
+            font-size: 11px;
+            color: #c9b4d8;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+        }
+
+        /* Summary Cards */
+        .summary-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .summary-card {
+            background: #131018;
+            padding: 14px;
+            border-radius: 14px;
+            border: 1px solid #2d2438;
+            text-align: center;
+        }
+
+        .summary-card.robux {
+            border-color: rgba(243, 156, 56, 0.4);
+            background: linear-gradient(180deg, rgba(243, 156, 56, 0.08) 0%, #131018 100%);
+        }
+
+        .summary-card.revenue {
+            border-color: rgba(255, 211, 132, 0.4);
+            background: linear-gradient(180deg, rgba(255, 211, 132, 0.08) 0%, #131018 100%);
+        }
+
+        .card-label {
+            font-size: 11px;
+            color: #a494b5;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            font-weight: 700;
+        }
+
+        .card-val {
+            font-size: 22px;
+            font-weight: 900;
+            margin-top: 6px;
+        }
+
+        .card-val.robux-text {
+            color: #ffd384;
+        }
+
+        .card-val.revenue-text {
+            color: #f39c38;
+        }
+
+        .section-title {
+            font-size: 12px;
+            font-weight: 800;
+            color: #8b799e;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+        }
+
+        /* Product Input List */
+        .product-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .product-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #131018;
+            padding: 10px 14px;
+            border-radius: 12px;
+            border: 1px solid #2b2236;
+        }
+
+        .product-title {
+            font-size: 14px;
+            font-weight: 800;
+            color: #fff6ed;
+        }
+
+        .product-price {
+            font-size: 12px;
+            color: #f39c38;
+            font-weight: 700;
+            margin-top: 2px;
+        }
+
+        .controls {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .qty-btn {
+            width: 32px;
+            height: 32px;
+            background: #2b2236;
+            border: 1px solid #3d314c;
+            color: #ffd384;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .qty-btn:active {
+            background: #f39c38;
+            color: #110e15;
+            border-color: #f39c38;
+        }
+
+        .qty-input {
+            width: 48px;
+            height: 32px;
+            background: #1c1822;
+            border: 1px solid #3d314c;
+            border-radius: 8px;
+            color: #ffffff;
+            text-align: center;
+            font-size: 14px;
+            font-weight: bold;
+            outline: none;
+        }
+
+        .qty-input:focus {
+            border-color: #f39c38;
+        }
+
+        .subtotal {
+            width: 65px;
+            text-align: right;
+            font-size: 14px;
+            font-weight: 800;
+            color: #ffd384;
+        }
+
+        .reset-btn {
+            width: 100%;
+            margin-top: 18px;
+            padding: 14px;
+            background: #ff0909;
+            border: 1px solid #fdfcfe;
+            color: #fbfbfb;
+            font-weight: 800;
+            font-size: 13px;
+            border-radius: 12px;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            transition: 0.2s;
+        }
+
+        .reset-btn:active {
+            background: #e54b4b;
+            color: #fff;
+            border-color: #e54b4b;
+        }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <!-- Header with Image Source Placeholder -->
+    <div class="header">
+        <!-- PUT YOUR LOGO IMAGE URL IN THE SRC BELOW -->
+        <img src="https://i.ibb.co/LdmNW871/quality-restoration-20260527193704597.jpg" alt="Franco Robux Logo" class="logo-img">
+        
+        <div class="header-text">
+            <h1>Franco Robux</h1>
+            <p>Mobile Sales Dashboard</p>
+        </div>
+    </div>
+
+    <!-- Summary Cards -->
+    <div class="summary-grid">
+        <div class="summary-card robux">
+            <div class="card-label">Total Robux</div>
+            <div class="card-val robux-text" id="totalRobux">0 R$</div>
+        </div>
+        <div class="summary-card revenue">
+            <div class="card-label">Total Revenue</div>
+            <div class="card-val revenue-text" id="totalCash">$0.00</div>
+        </div>
+    </div>
+
+    <div class="section-title">Sales Input</div>
+
+    <!-- Product Rows -->
+    <div class="product-list" id="productList"></div>
+
+    <button class="reset-btn" onclick="resetAll()">Reset All Values</button>
+</div>
+
+<script>
+    const products = [
+        { robux: 80, price: 0.85 },
+        { robux: 160, price: 1.75 },
+        { robux: 240, price: 2.60 },
+        { robux: 320, price: 3.50 },
+        { robux: 500, price: 4.20 },
+        { robux: 1000, price: 8.40 },
+        { robux: 2000, price: 16.80 },
+        { robux: 10000, price: 84.00 },
+        { robux: 22500, price: 168.00 }
+    ];
+
+    function renderProducts() {
+        const container = document.getElementById('productList');
+        container.innerHTML = '';
+
+        products.forEach(item => {
+            const row = document.createElement('div');
+            row.className = 'product-item';
+            row.innerHTML = `
+                <div>
+                    <div class="product-title">${item.robux.toLocaleString()} R$</div>
+                    <div class="product-price">$${item.price.toFixed(2)}</div>
+                </div>
+                <div class="controls">
+                    <div class="qty-btn" onclick="adjustQty(${item.robux}, -1)">-</div>
+                    <input type="number" 
+                           class="qty-input" 
+                           id="input-${item.robux}" 
+                           value="0" 
+                           min="0" 
+                           oninput="calculateTotals()">
+                    <div class="qty-btn" onclick="adjustQty(${item.robux}, 1)">+</div>
+                    <div class="subtotal" id="subtotal-${item.robux}">$0.00</div>
+                </div>
+            `;
+            container.appendChild(row);
+        });
+    }
+
+    function adjustQty(robux, change) {
+        const input = document.getElementById(`input-${robux}`);
+        let currentVal = parseInt(input.value) || 0;
+        currentVal = Math.max(0, currentVal + change);
+        input.value = currentVal;
+        calculateTotals();
+    }
+
+    function calculateTotals() {
+        let totalCash = 0;
+        let totalRobux = 0;
+
+        products.forEach(item => {
+            const input = document.getElementById(`input-${item.robux}`);
+            const qty = parseInt(input.value) || 0;
+
+            const cashSub = qty * item.price;
+            const robuxSub = qty * item.robux;
+
+            totalCash += cashSub;
+            totalRobux += robuxSub;
+
+            document.getElementById(`subtotal-${item.robux}`).innerText = `$${cashSub.toFixed(2)}`;
+        });
+
+        document.getElementById('totalRobux').innerText = totalRobux.toLocaleString() + ' R$';
+        document.getElementById('totalCash').innerText = '$' + totalCash.toFixed(2);
+    }
+
+    function resetAll() {
+        products.forEach(item => {
+            document.getElementById(`input-${item.robux}`).value = 0;
+            document.getElementById(`subtotal-${item.robux}`).innerText = '$0.00';
+        });
+        document.getElementById('totalRobux').innerText = '0 R$';
+        document.getElementById('totalCash').innerText = '$0.00';
+    }
+
+    renderProducts();
+</script>
+
+</body>
+</html>
